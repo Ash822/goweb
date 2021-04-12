@@ -1,14 +1,13 @@
 package service
 
 import (
-	"errors"
 	"github.com/ash822/goweb/entity"
 	"github.com/ash822/goweb/repository"
+	"github.com/ash822/goweb/utils"
 	"github.com/google/uuid"
 )
 
 type MessageService interface {
-	IsPalindrome(text string) (bool, error)
 	Create(message *entity.Message) (*entity.Message, error)
 	Update(id string, message *entity.Message) (*entity.Message, error)
 	Delete(id string) error
@@ -25,24 +24,15 @@ func GetInstance(msgRepo repository.MessageRepository) MessageService {
 	return &svc{}
 }
 
-func (*svc) IsPalindrome(text string) (bool, error) {
-	if text == "" {
-		err := errors.New("text provided is empty")
-		return false, err
-	} else {
-		// TODO: Check if palindrome
-		return false, nil
-	}
-}
-
 func (*svc) Create(msg *entity.Message) (*entity.Message, error) {
 	msg.Id = uuid.New().String()
+	msg.Palindrome = msgutils.IsPalindrome(msg.Text)
 	return repo.Create(msg)
 }
 
 func (*svc) Update(id string, newMsg *entity.Message) (*entity.Message, error) {
 	newMsg.Id = id
-	newMsg.Palindrome = false // TODO: Check for palindrome
+	newMsg.Palindrome = msgutils.IsPalindrome(newMsg.Text)
 	return repo.Update(newMsg)
 }
 
