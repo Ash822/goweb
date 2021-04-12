@@ -1,16 +1,22 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
-	"log"
+	"github.com/ash822/goweb/controller"
+	"github.com/ash822/goweb/repository"
+	"github.com/ash822/goweb/router"
+	"github.com/ash822/goweb/service"
 	"net/http"
 )
 
-func main() {
-	router := mux.NewRouter()
-	const port = ":8000"
+var (
+	msgRepo = repository.GetInstance()
+	msgSvc = service.GetInstance(msgRepo)
+	msgController = controller.GetInstance(msgSvc)
+	httpRouter = router.HttpRouter()
+)
 
-	router.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
+func main() {
+	httpRouter.Get("/", func(res http.ResponseWriter, req *http.Request) {
 		msg := "Request served the server"
 		payload := []byte(`{"message": "` + msg + `"}`)
 
@@ -19,6 +25,11 @@ func main() {
 		res.Write(payload)
 	})
 
-	log.Printf("Server is listening at port%s", port)
-	log.Fatalln(http.ListenAndServe(port, router))
+	httpRouter.Get("/message/{id}", msgController.GetMessageById)
+	httpRouter.Get("/messages", msgController.GetAllMessages)
+	httpRouter.Post("/message", msgController.CreateMessage)
+	httpRouter.Post("/message/{id}", msgController.UpdateMessage)
+	httpRouter.Delete("/message/{id}", msgController.DeleteMessage)
+
+	httpRouter.CreateServer(PORT)
 }
