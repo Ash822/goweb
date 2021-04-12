@@ -1,5 +1,7 @@
 package repository
 
+//go:generate mockgen -destination=../mocks/repository/message_repository.go -package=mocks github.com/ash822/goweb/repository MessageRepository
+
 import (
 	"errors"
 	"github.com/ash822/goweb/entity"
