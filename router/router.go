@@ -13,7 +13,7 @@ type Router interface {
 	Delete(path string, fn func(resw http.ResponseWriter, req *http.Request))
 }
 
-type httpRouter struct {}
+type httpRouter struct{}
 
 var muxRouter = mux.NewRouter()
 

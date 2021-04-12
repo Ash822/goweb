@@ -25,8 +25,8 @@ func GetInstance() MessageRepository {
 
 func (*repo) Create(msg *entity.Message) (*entity.Message, error) {
 	msgs = append(msgs, entity.Message{
-		Id: msg.Id,
-		Text: msg.Text,
+		Id:         msg.Id,
+		Text:       msg.Text,
 		Palindrome: msg.Palindrome,
 	})
 
@@ -49,8 +49,8 @@ func (*repo) Update(newMsg *entity.Message) (*entity.Message, error) {
 		return nil, errors.New("a message does not exists for the given Id:" + newMsg.Id)
 	} else {
 		msgs[index] = entity.Message{
-			Id: newMsg.Id,
-			Text: newMsg.Text,
+			Id:         newMsg.Id,
+			Text:       newMsg.Text,
 			Palindrome: newMsg.Palindrome,
 		}
 

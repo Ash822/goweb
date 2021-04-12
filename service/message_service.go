@@ -18,9 +18,9 @@ type MessageService interface {
 
 var repo repository.MessageRepository
 
-type svc struct {}
+type svc struct{}
 
-func GetInstance(msgRepo repository.MessageRepository) MessageService  {
+func GetInstance(msgRepo repository.MessageRepository) MessageService {
 	repo = msgRepo
 	return &svc{}
 }
@@ -57,4 +57,3 @@ func (*svc) FindById(id string) (*entity.Message, error) {
 func (*svc) FindAll() ([]entity.Message, error) {
 	return repo.FindAll()
 }
-

@@ -9,10 +9,10 @@ import (
 )
 
 var (
-	msgRepo = repository.GetInstance()
-	msgSvc = service.GetInstance(msgRepo)
+	msgRepo       = repository.GetInstance()
+	msgSvc        = service.GetInstance(msgRepo)
 	msgController = controller.GetInstance(msgSvc)
-	httpRouter = router.HttpRouter()
+	httpRouter    = router.HttpRouter()
 )
 
 func main() {
