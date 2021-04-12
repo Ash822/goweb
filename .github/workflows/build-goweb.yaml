@@ -1,0 +1,31 @@
+  name: CI for goweb app
+  on:
+    push:
+      branches:
+        - master
+      pull_request:
+        branches:
+        — master
+  jobs:
+    build:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Setup go
+          uses: actions/setup-go@v2
+          with:
+            go-version: '1.16.3'
+          id: go
+
+        - name: Fetch the latest code
+          uses: actions/checkout@v2
+
+        - name: Install dependencies
+          run: |
+            go version
+            go get -u golang.org/x/lint/golint
+
+        - name: Run build
+          run: go build .
+
+        - name: Run testing
+          run: go test -v ./...
