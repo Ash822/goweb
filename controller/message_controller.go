@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/ash822/goweb/entity"
 	"github.com/ash822/goweb/service"
-	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -65,24 +64,16 @@ func (*controller) CreateMessage(resw http.ResponseWriter, req *http.Request) {
 
 	json.NewDecoder(req.Body).Decode(&msg)
 
-	msg.Id = uuid.New().String()
-	msg.Palindrome, err = svc.IsPalindrome(msg.Text)
+	result, err := svc.Create(&msg)
 
 	if err != nil {
 		resw.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(resw).Encode([]byte(`{"error": "` + err.Error() + `"}`))
-	} else {
-		result, err := svc.Create(&msg)
-
-		if err != nil {
-			resw.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(resw).Encode([]byte(`{"error": "` + err.Error() + `"}`))
-			return
-		}
-
-		resw.WriteHeader(http.StatusCreated)
-		json.NewEncoder(resw).Encode(result)
+		return
 	}
+
+	resw.WriteHeader(http.StatusCreated)
+	json.NewEncoder(resw).Encode(result)
 }
 
 func (*controller) UpdateMessage(resw http.ResponseWriter, req *http.Request) {
