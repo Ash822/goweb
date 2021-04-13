@@ -2,10 +2,10 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/ash822/goweb/entity"
+	. "github.com/ash822/goweb/entity"
 	"github.com/ash822/goweb/service"
-	"github.com/gorilla/mux"
 	"net/http"
+	"strings"
 )
 
 type MessageController interface {
@@ -28,14 +28,14 @@ func GetInstance(msgSvc service.MessageService) MessageController {
 func (*controller) GetMessageById(resw http.ResponseWriter, req *http.Request) {
 	resw.Header().Set("Content-type", "application/json")
 
-	params := mux.Vars(req)
-	id := params["id"]
+	id := strings.TrimPrefix(req.URL.Path, "/message/")
 
 	msg, err := svc.FindById(id)
 
 	if err != nil {
 		resw.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(resw).Encode([]byte(`{"error": "` + "err.Error()" + `"}`))
+		json.NewEncoder(resw).Encode(ServiceError{Error: err.Error()})
+		return
 	}
 
 	resw.WriteHeader(http.StatusOK)
@@ -49,7 +49,7 @@ func (*controller) GetAllMessages(resw http.ResponseWriter, _ *http.Request) {
 
 	if err != nil {
 		resw.WriteHeader(http.StatusInternalServerError)
-		resw.Write([]byte(`{"error": "Encountered error fetching the messages"`))
+		json.NewEncoder(resw).Encode(ServiceError{Error: "encountered error fetching the messages"})
 	} else {
 		resw.WriteHeader(http.StatusOK)
 		json.NewEncoder(resw).Encode(msgs)
@@ -59,7 +59,7 @@ func (*controller) GetAllMessages(resw http.ResponseWriter, _ *http.Request) {
 func (*controller) CreateMessage(resw http.ResponseWriter, req *http.Request) {
 	resw.Header().Set("Content-type", "application/json")
 
-	var msg entity.Message
+	var msg Message
 	var err error
 
 	json.NewDecoder(req.Body).Decode(&msg)
@@ -68,7 +68,7 @@ func (*controller) CreateMessage(resw http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		resw.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(resw).Encode([]byte(`{"error": "` + err.Error() + `"}`))
+		json.NewEncoder(resw).Encode(ServiceError{Error: err.Error()})
 		return
 	}
 
@@ -79,10 +79,9 @@ func (*controller) CreateMessage(resw http.ResponseWriter, req *http.Request) {
 func (*controller) UpdateMessage(resw http.ResponseWriter, req *http.Request) {
 	resw.Header().Set("Content-type", "application/json")
 
-	var msg entity.Message
+	var msg Message
 
-	params := mux.Vars(req)
-	id := params["id"]
+	id := strings.TrimPrefix(req.URL.Path, "/message/")
 
 	json.NewDecoder(req.Body).Decode(&msg)
 
@@ -90,7 +89,7 @@ func (*controller) UpdateMessage(resw http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		resw.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(resw).Encode([]byte(`{"error": "` + err.Error() + `"}`))
+		json.NewEncoder(resw).Encode(ServiceError{Error: err.Error()})
 		return
 	}
 
@@ -101,14 +100,13 @@ func (*controller) UpdateMessage(resw http.ResponseWriter, req *http.Request) {
 func (*controller) DeleteMessage(resw http.ResponseWriter, req *http.Request) {
 	resw.Header().Set("Content-type", "application/json")
 
-	params := mux.Vars(req)
-	id := params["id"]
+	id := strings.TrimPrefix(req.URL.Path, "/message/")
 
 	err := svc.Delete(id)
 
 	if err != nil {
 		resw.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(resw).Encode([]byte(`{"error": "` + err.Error() + `"}`))
+		json.NewEncoder(resw).Encode(ServiceError{Error: err.Error()})
 		return
 	}
 

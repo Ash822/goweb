@@ -4,19 +4,19 @@ package repository
 
 import (
 	"errors"
-	"github.com/ash822/goweb/entity"
+	. "github.com/ash822/goweb/entity"
 )
 
 type MessageRepository interface {
-	FindById(id string) (*entity.Message, error)
-	FindAll() ([]entity.Message, error)
-	Create(msg *entity.Message) (*entity.Message, error)
-	Update(newMsg *entity.Message) (*entity.Message, error)
+	FindById(id string) (*Message, error)
+	FindAll() ([]Message, error)
+	Create(msg *Message) (*Message, error)
+	Update(newMsg *Message) (*Message, error)
 	Delete(id string) error
 }
 
 var (
-	msgs []entity.Message
+	msgs []Message
 )
 
 type repo struct{}
@@ -25,8 +25,8 @@ func GetInstance() MessageRepository {
 	return &repo{}
 }
 
-func (*repo) Create(msg *entity.Message) (*entity.Message, error) {
-	msgs = append(msgs, entity.Message{
+func (*repo) Create(msg *Message) (*Message, error) {
+	msgs = append(msgs, Message{
 		Id:         msg.Id,
 		Text:       msg.Text,
 		Palindrome: msg.Palindrome,
@@ -35,7 +35,7 @@ func (*repo) Create(msg *entity.Message) (*entity.Message, error) {
 	return msg, nil
 }
 
-func (*repo) Update(newMsg *entity.Message) (*entity.Message, error) {
+func (*repo) Update(newMsg *Message) (*Message, error) {
 	if newMsg.Id == "" {
 		return nil, errors.New("the id provided is invalid")
 	}
@@ -50,7 +50,7 @@ func (*repo) Update(newMsg *entity.Message) (*entity.Message, error) {
 	if index == -1 {
 		return nil, errors.New("a message does not exists for the given Id:" + newMsg.Id)
 	} else {
-		msgs[index] = entity.Message{
+		msgs[index] = Message{
 			Id:         newMsg.Id,
 			Text:       newMsg.Text,
 			Palindrome: newMsg.Palindrome,
@@ -74,17 +74,17 @@ func (*repo) Delete(id string) error {
 	}
 
 	if index == -1 {
-		return errors.New("a message does not exists for the given Id:" + id)
+		return errors.New("a message does not exists for the given Id: " + id)
 	} else {
 		msgs[index] = msgs[len(msgs)-1]
-		msgs[len(msgs)-1] = entity.Message{}
+		msgs[len(msgs)-1] = Message{}
 		msgs = msgs[:len(msgs)-1]
 
 		return nil
 	}
 }
 
-func (*repo) FindById(id string) (*entity.Message, error) {
+func (*repo) FindById(id string) (*Message, error) {
 	if id == "" {
 		return nil, errors.New("the id provided is invalid")
 	}
@@ -95,12 +95,12 @@ func (*repo) FindById(id string) (*entity.Message, error) {
 		}
 	}
 
-	return nil, errors.New("a message does not exists for the given Id:" + id)
+	return nil, errors.New("a message does not exists for the given Id: " + id)
 }
 
-func (*repo) FindAll() ([]entity.Message, error) {
+func (*repo) FindAll() ([]Message, error) {
 	if len(msgs) == 0 {
-		msgs = []entity.Message{}
+		msgs = []Message{}
 	}
 	return msgs, nil
 }

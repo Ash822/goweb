@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/ash822/goweb/entity"
+	. "github.com/ash822/goweb/entity"
 	mocks "github.com/ash822/goweb/mocks/repository"
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/gomega"
@@ -10,9 +10,13 @@ import (
 
 var (
 	id = "1"
-	msg = entity.Message{
+	msg = Message{
 		Id: id,
 		Text: "ABBA",
+	}
+
+	invalidMsg = Message{
+		Text: "",
 	}
 )
 
@@ -31,6 +35,18 @@ func TestSvc_Create(t *testing.T) {
 	g.Expect(result.Palindrome).To(BeTrue())
 }
 
+func TestSvc_Create2(t *testing.T) {
+	g := NewGomegaWithT(t)
+	ctrl := gomock.NewController(t)
+	mr := mocks.NewMockMessageRepository(ctrl)
+
+	testMsgSvc := GetInstance(mr)
+	_, err := testMsgSvc.Create(&invalidMsg)
+
+	g.Expect(err).Should(HaveOccurred())
+	g.Expect(err.Error()).Should(Equal("the message text is invalid or not found"))
+}
+
 func TestSvc_Update(t *testing.T) {
 	g := NewGomegaWithT(t)
 	ctrl := gomock.NewController(t)
@@ -46,6 +62,30 @@ func TestSvc_Update(t *testing.T) {
 	g.Expect(result.Palindrome).To(BeTrue())
 }
 
+func TestSvc_Update2(t *testing.T) {
+	g := NewGomegaWithT(t)
+	ctrl := gomock.NewController(t)
+	mr := mocks.NewMockMessageRepository(ctrl)
+
+	testMsgSvc := GetInstance(mr)
+	_, err := testMsgSvc.Update("", &invalidMsg)
+
+	g.Expect(err).Should(HaveOccurred())
+	g.Expect(err.Error()).Should(Equal("the id provided is invalid"))
+}
+
+func TestSvc_Update3(t *testing.T) {
+	g := NewGomegaWithT(t)
+	ctrl := gomock.NewController(t)
+	mr := mocks.NewMockMessageRepository(ctrl)
+
+	testMsgSvc := GetInstance(mr)
+	_, err := testMsgSvc.Update("1", &invalidMsg)
+
+	g.Expect(err).Should(HaveOccurred())
+	g.Expect(err.Error()).Should(Equal("the message text is invalid or not found"))
+}
+
 func TestSvc_Delete(t *testing.T) {
 	g := NewGomegaWithT(t)
 	ctrl := gomock.NewController(t)
@@ -57,6 +97,18 @@ func TestSvc_Delete(t *testing.T) {
 	err := testMsgSvc.Delete(id)
 
 	g.Expect(err).NotTo(HaveOccurred())
+}
+
+func TestSvc_Delete2(t *testing.T) {
+	g := NewGomegaWithT(t)
+	ctrl := gomock.NewController(t)
+	mr := mocks.NewMockMessageRepository(ctrl)
+
+	testMsgSvc := GetInstance(mr)
+	err := testMsgSvc.Delete("")
+
+	g.Expect(err).Should(HaveOccurred())
+	g.Expect(err.Error()).Should(Equal("the id provided is invalid"))
 }
 
 func TestSvc_FindById(t *testing.T) {
@@ -73,12 +125,24 @@ func TestSvc_FindById(t *testing.T) {
 	g.Expect(result.Id).Should(Equal(id))
 }
 
+func TestSvc_FindAll2(t *testing.T) {
+	g := NewGomegaWithT(t)
+	ctrl := gomock.NewController(t)
+	mr := mocks.NewMockMessageRepository(ctrl)
+
+	testMsgSvc := GetInstance(mr)
+	_, err := testMsgSvc.FindById("")
+
+	g.Expect(err).Should(HaveOccurred())
+	g.Expect(err.Error()).Should(Equal("the id provided is invalid"))
+}
+
 func TestSvc_FindAll(t *testing.T) {
 	g := NewGomegaWithT(t)
 	ctrl := gomock.NewController(t)
 	mr := mocks.NewMockMessageRepository(ctrl)
 
-	mr.EXPECT().FindAll().Return([]entity.Message{msg}, nil)
+	mr.EXPECT().FindAll().Return([]Message{msg}, nil)
 
 	testMsgSvc := GetInstance(mr)
 	result, err := testMsgSvc.FindAll()
