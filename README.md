@@ -103,7 +103,7 @@ The REST endpoints are tested using `net/http/httptest` package.
 
 To execute the tests, run `make test` command.
 
-### CI/CD
+### CI CD
 
 The project is setup with Continuous Integration and Continuous Deployment (to Docker hub) using Github Actions.
 
