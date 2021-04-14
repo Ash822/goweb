@@ -1,4 +1,17 @@
 # HTTP Server
+
+- [HTTP Server](#http-server)
+    * [Getting started](#getting-started)
+        + [Running using Makefile](#running-using-makefile)
+        + [Running using Docker](#running-using-docker)
+    * [About](#about)
+        + [Endpoints](#endpoints)
+            - [Assumption](#assumption)
+        + [Architecture](#architecture)
+        + [Testing](#testing)
+            - [API documentation](#api-documentation)
+        + [CI/CD](#ci-cd)
+    
 ## Getting started
 
 Prerequisites: `git` `go 1.16.3` `docker` `docker hub account`
@@ -34,6 +47,35 @@ This repository showcases a simple HTTP server serving REST endpoints, built usi
 It supports the following endpoints.
 
 ![endpoints](.README_images/endpoints.png)
+
+The POST endpoints take a json with the `text` that needs to be checked as palindrome.
+
+```aidl 
+Request body:
+{
+  "Text": "kayak"
+}
+```
+
+When the resource gets created, the service performs check whether the given string is a palindrome and adds a boolean flag indicating it. Also, a random UUID is generated as `id` of the document in order to fetch it.
+
+```aidl
+Success Response: 
+
+{
+  "id": "df6711c5-d061-4e7b-b27f-548fac86fa4f",
+  "text": "kayak",
+  "palindrome": true
+}
+```
+
+The `id` can be used to retrieve the message back. 
+
+For more information on API documentation refer the [API documentation](#api-documentation) subsection.
+
+#### Assumption
+
+The palindrome check is case-insensitive. Both `Kayak` and `kaYAK` will be a valid palindrome.
 
 ### Architecture
 
