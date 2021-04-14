@@ -1,4 +1,4 @@
-name: CI for goweb app
+name: CI/CD for goweb app
 on:
   push:
     branches:
