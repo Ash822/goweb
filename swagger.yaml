@@ -1,0 +1,146 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  Message:
+    properties:
+      id:
+        type: string
+        x-go-name: Id
+      palindrome:
+        type: boolean
+        x-go-name: Palindrome
+      text:
+        type: string
+        x-go-name: Text
+    type: object
+    x-go-package: github.com/ash822/goweb/entity
+  ServiceError:
+    properties:
+      error:
+        type: string
+        x-go-name: Error
+    type: object
+    x-go-package: github.com/ash822/goweb/entity
+host: localhost:8000
+info:
+  description: Documentation of our GoWeb service APIs.
+  title: GoWeb.
+  version: 1.0.0
+paths:
+  /message:
+    post:
+      description: Check if the given text is palindrome
+      operationId: bodyOfMessageEndpoint
+      parameters:
+      - description: Add the string that needs palindrome check to the Body property
+          'text'
+        in: body
+        name: Body
+        schema:
+          properties:
+            Text:
+              example: Expected type string
+              type: string
+          required:
+          - Text
+          type: object
+      responses:
+        "201":
+          $ref: '#/responses/MessageResponse'
+        "400":
+          $ref: '#/responses/ErrorResponse'
+      tags:
+      - message
+  /message/{id}:
+    delete:
+      description: Deletes a message by Id
+      operationId: deleteMessageId
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+        x-go-name: ID
+      responses:
+        "204":
+          $ref: '#/responses/EmptyResponse'
+        "400":
+          $ref: '#/responses/ErrorResponse'
+      tags:
+      - message
+    get:
+      description: Get a message by id
+      operationId: idOfMessageEndpoint
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+        x-go-name: ID
+      responses:
+        "200":
+          $ref: '#/responses/MessageResponse'
+        "400":
+          $ref: '#/responses/ErrorResponse'
+        "404":
+          $ref: '#/responses/ErrorResponse'
+      tags:
+      - message
+    post:
+      description: Update the message by Id
+      operationId: updateEndpoint
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+        x-go-name: ID
+      - description: Add the string that needs palindrome check to the Body property
+          'text'
+        in: body
+        name: Body
+        schema:
+          properties:
+            Text:
+              example: Expected type string
+              type: string
+          required:
+          - Text
+          type: object
+      responses:
+        "200":
+          $ref: '#/responses/MessageResponse'
+        "400":
+          $ref: '#/responses/ErrorResponse'
+      tags:
+      - message
+  /messages:
+    get:
+      description: Get all messages
+      operationId: message
+      responses:
+        "200":
+          $ref: '#/responses/MessagesResponse'
+produces:
+- application/json
+responses:
+  EmptyResponse:
+    description: ""
+  ErrorResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/ServiceError'
+  MessageResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/Message'
+  MessagesResponse:
+    description: ""
+    schema:
+      items:
+        $ref: '#/definitions/Message'
+      type: array
+schemes:
+- http
+swagger: "2.0"

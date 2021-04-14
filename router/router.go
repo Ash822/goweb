@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 )
@@ -35,5 +36,13 @@ func (*httpRouter) Delete(path string, fn func(resw http.ResponseWriter, req *ht
 
 func (*httpRouter) CreateServer(port string) {
 	log.Printf("Server is listening at port:%s", port)
-	http.ListenAndServe(":"+port, muxRouter)
+
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET", "POST", "DELETE", "OPTION"},
+	})
+
+	handler := c.Handler(muxRouter)
+
+	http.ListenAndServe(":"+port, handler)
 }

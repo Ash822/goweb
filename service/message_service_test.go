@@ -10,12 +10,17 @@ import (
 
 var (
 	id = "1"
-	msg = Message{
-		Id: id,
+	msgReq = MessageRequest{
 		Text: "ABBA",
 	}
 
-	invalidMsg = Message{
+	msgRes = MessageResponse{
+		Id: id,
+		Text: "ABBA",
+		Palindrome: true,
+	}
+
+	invalidMsg = MessageRequest{
 		Text: "",
 	}
 )
@@ -25,10 +30,15 @@ func TestSvc_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	mr := mocks.NewMockMessageRepository(ctrl)
 
-	mr.EXPECT().Create(&msg).Return(&msg, nil)
+	msgRes1 := MessageResponse{
+		Text: "ABBA",
+		Palindrome: true,
+	}
+
+	mr.EXPECT().Create(&msgRes1).Return(&msgRes1, nil)
 
 	testMsgSvc := GetInstance(mr)
-	result, err := testMsgSvc.Create(&msg)
+	result, err := testMsgSvc.Create(&msgReq)
 
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(result.Text).Should(Equal("ABBA"))
@@ -52,10 +62,10 @@ func TestSvc_Update(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	mr := mocks.NewMockMessageRepository(ctrl)
 
-	mr.EXPECT().Update(&msg).Return(&msg, nil)
+	mr.EXPECT().Update(&msgRes).Return(&msgRes, nil)
 
 	testMsgSvc := GetInstance(mr)
-	result, err := testMsgSvc.Update(id, &msg)
+	result, err := testMsgSvc.Update(id, &msgReq)
 
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(result.Id).Should(Equal(id))
@@ -116,7 +126,7 @@ func TestSvc_FindById(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	mr := mocks.NewMockMessageRepository(ctrl)
 
-	mr.EXPECT().FindById(id).Return(&msg, nil)
+	mr.EXPECT().FindById(id).Return(&msgRes, nil)
 
 	testMsgSvc := GetInstance(mr)
 	result, err := testMsgSvc.FindById(id)
@@ -142,7 +152,7 @@ func TestSvc_FindAll(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	mr := mocks.NewMockMessageRepository(ctrl)
 
-	mr.EXPECT().FindAll().Return([]Message{msg}, nil)
+	mr.EXPECT().FindAll().Return([]MessageResponse{msgRes}, nil)
 
 	testMsgSvc := GetInstance(mr)
 	result, err := testMsgSvc.FindAll()

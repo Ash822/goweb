@@ -59,12 +59,12 @@ func (*controller) GetAllMessages(resw http.ResponseWriter, _ *http.Request) {
 func (*controller) CreateMessage(resw http.ResponseWriter, req *http.Request) {
 	resw.Header().Set("Content-type", "application/json")
 
-	var msg Message
+	var msgReq MessageRequest
 	var err error
 
-	json.NewDecoder(req.Body).Decode(&msg)
+	json.NewDecoder(req.Body).Decode(&msgReq)
 
-	result, err := svc.Create(&msg)
+	result, err := svc.Create(&msgReq)
 
 	if err != nil {
 		resw.WriteHeader(http.StatusBadRequest)
@@ -79,13 +79,13 @@ func (*controller) CreateMessage(resw http.ResponseWriter, req *http.Request) {
 func (*controller) UpdateMessage(resw http.ResponseWriter, req *http.Request) {
 	resw.Header().Set("Content-type", "application/json")
 
-	var msg Message
+	var msgReq MessageRequest
 
 	id := strings.TrimPrefix(req.URL.Path, "/message/")
 
-	json.NewDecoder(req.Body).Decode(&msg)
+	json.NewDecoder(req.Body).Decode(&msgReq)
 
-	result, err := svc.Update(id, &msg)
+	result, err := svc.Update(id, &msgReq)
 
 	if err != nil {
 		resw.WriteHeader(http.StatusBadRequest)

@@ -6,6 +6,7 @@ import (
 	"github.com/ash822/goweb/router"
 	"github.com/ash822/goweb/service"
 	"net/http"
+	_ "github.com/ash822/goweb/docs"
 )
 
 var (

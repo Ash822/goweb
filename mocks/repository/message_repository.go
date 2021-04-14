@@ -35,10 +35,10 @@ func (m *MockMessageRepository) EXPECT() *MockMessageRepositoryMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockMessageRepository) Create(arg0 *entity.Message) (*entity.Message, error) {
+func (m *MockMessageRepository) Create(arg0 *entity.MessageResponse) (*entity.MessageResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", arg0)
-	ret0, _ := ret[0].(*entity.Message)
+	ret0, _ := ret[0].(*entity.MessageResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -64,10 +64,10 @@ func (mr *MockMessageRepositoryMockRecorder) Delete(arg0 interface{}) *gomock.Ca
 }
 
 // FindAll mocks base method.
-func (m *MockMessageRepository) FindAll() ([]entity.Message, error) {
+func (m *MockMessageRepository) FindAll() ([]entity.MessageResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindAll")
-	ret0, _ := ret[0].([]entity.Message)
+	ret0, _ := ret[0].([]entity.MessageResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -79,10 +79,10 @@ func (mr *MockMessageRepositoryMockRecorder) FindAll() *gomock.Call {
 }
 
 // FindById mocks base method.
-func (m *MockMessageRepository) FindById(arg0 string) (*entity.Message, error) {
+func (m *MockMessageRepository) FindById(arg0 string) (*entity.MessageResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindById", arg0)
-	ret0, _ := ret[0].(*entity.Message)
+	ret0, _ := ret[0].(*entity.MessageResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -94,10 +94,10 @@ func (mr *MockMessageRepositoryMockRecorder) FindById(arg0 interface{}) *gomock.
 }
 
 // Update mocks base method.
-func (m *MockMessageRepository) Update(arg0 *entity.Message) (*entity.Message, error) {
+func (m *MockMessageRepository) Update(arg0 *entity.MessageResponse) (*entity.MessageResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", arg0)
-	ret0, _ := ret[0].(*entity.Message)
+	ret0, _ := ret[0].(*entity.MessageResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
