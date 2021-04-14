@@ -9,12 +9,16 @@
             - [Assumption](#assumption)
         + [Architecture](#architecture)
         + [Testing](#testing)
-            - [API documentation](#api-documentation)
         + [CI/CD](#ci-cd)
+        + [API documentation](#api-documentation)
     
 ## Getting started
 
-Prerequisites: `git` `go 1.16.3` `docker` `docker hub account`
+Prerequisites: 
+- `git` 
+- `go 1.16.3` 
+- `docker` 
+- `docker hub account`
 
 ### Running using Makefile
 Commands required for testing, building the project and for serving swagger client as added to the `Makefile`.
@@ -99,12 +103,6 @@ The REST endpoints are tested using `net/http/httptest` package.
 
 To execute the tests, run `make test` command.
 
-### API documentation
-
-To generate the swagger file and to serve the swagger client, run `make swagger-run` command. 
-
-[swagger.yaml](swagger.yaml)
-
 ### CI/CD
 
 The project is setup with Continuous Integration and Continuous Deployment (to Docker hub) using Github Actions.
@@ -115,3 +113,8 @@ As the last step, the application builds and tags a docker image, and pushed the
 
 Visit [Actions](https://github.com/Ash822/goweb/actions/workflows/build-deploy-goweb.yaml) tab to check the jobs.
 
+### API documentation
+
+To generate the swagger file and to serve the swagger client, run `make swagger-run` command.
+
+[swagger.yaml](swagger.yaml)
