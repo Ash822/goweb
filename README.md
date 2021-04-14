@@ -109,7 +109,7 @@ The project is setup with Continuous Integration and Continuous Deployment (to D
 
 On every pull request to `master` branch and on every push to `master` branch, the workflow gets executed. The workflow checks out the latest, build and run tests. 
 
-As the last step, the application builds and tags a docker image, and pushed the image to Docker hub registry.
+As the last step, the application builds and tags a docker image, and pushes the image to Docker hub registry.
 
 Visit [Actions](https://github.com/Ash822/goweb/actions/workflows/build-deploy-goweb.yaml) tab to check the jobs.
 
@@ -117,4 +117,4 @@ Visit [Actions](https://github.com/Ash822/goweb/actions/workflows/build-deploy-g
 
 To generate the swagger file and to serve the swagger client, run `make swagger-run` command.
 
-[swagger.yaml](swagger.yaml)
+Refer: [swagger.yaml](swagger.yaml)
