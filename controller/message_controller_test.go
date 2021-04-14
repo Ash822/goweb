@@ -27,34 +27,30 @@ const (
 	invalidInput = "baby"
 )
 
-func Setup() {
-	var msg = Message{
-		Id:    id1,
+func Setup() string {
+	var msg = MessageResponse{
+		Id: id1,
 		Text:  validInput1,
 		Palindrome: true,
 	}
 	msgRepo.Create(&msg)
+	return msg.Id
 }
 
-func TearDown(msg *Message) {
+func TearDown(msg *MessageResponse) {
 	msgRepo.Delete(msg.Id)
 }
 
 func TestController_CreateMessage(t *testing.T) {
-	//Create a new HTTP POST request
 	var body = []byte(`{"id": "` + id2 + `", "text": "` + validInput2 + `"}`)
 	req, _ := http.NewRequest("POST", "/message", bytes.NewBuffer(body))
 
-	//Assign HTTP Handler function to controller
 	handler := http.HandlerFunc(msgCtrl.CreateMessage)
 
-	//Record HTTP Response (httptest)
 	response := httptest.NewRecorder()
 
-	//Dispatch the HTTP request
 	handler.ServeHTTP(response, req)
 
-	//Add Assertions on the HTTP Status code and the response
 	expected := http.StatusCreated
 	status := response.Code
 
@@ -62,8 +58,7 @@ func TestController_CreateMessage(t *testing.T) {
 		t.Errorf("Handler returned a wrong status code. Expected: %v Actual: %v", expected, status)
 	}
 
-	// Decode the HTTP response
-	var msg Message
+	var msg MessageResponse
 	json.NewDecoder(io.Reader(response.Body)).Decode(&msg)
 
 	// Assert HTTP response
@@ -84,20 +79,15 @@ func TestController_CreateMessage(t *testing.T) {
 }
 
 func TestController_CreateMessage2(t *testing.T) {
-	//Create a new HTTP POST request
-	var body = []byte(`{"id": "` + id2 + `", "text1": "` + validInput2 + `"}`)
+	var body = []byte(`{"text1": "` + validInput2 + `"}`)
 	req, _ := http.NewRequest("POST", "/message", bytes.NewBuffer(body))
 
-	//Assign HTTP Handler function to controller
 	handler := http.HandlerFunc(msgCtrl.CreateMessage)
 
-	//Record HTTP Response (httptest)
 	response := httptest.NewRecorder()
 
-	//Dispatch the HTTP request
 	handler.ServeHTTP(response, req)
 
-	//Add Assertions on the HTTP Status code and the response
 	expected := http.StatusBadRequest
 	status := response.Code
 
@@ -105,34 +95,26 @@ func TestController_CreateMessage2(t *testing.T) {
 		t.Errorf("Handler returned a wrong status code. Expected: %v Actual: %v", expected, status)
 	}
 
-	// Decode the HTTP response
 	var err ServiceError
 	json.NewDecoder(io.Reader(response.Body)).Decode(&err)
 
-	// Assert HTTP response
 	g := NewGomegaWithT(t)
 	g.Expect(err.Error).Should(Equal("the message text is invalid or not found"))
 }
 
 func TestController_UpdateMessage(t *testing.T) {
-	// Provision the msg in the collection
-	Setup()
+	id := Setup()
 
-	//Create a new HTTP POST request
-	var body = []byte(`{"id": "` + id1 + `", "text": "` + invalidInput + `"}`)
+	var body = []byte(`{"text": "` + invalidInput + `"}`)
 
-	req, _ := http.NewRequest("POST", "/message/1", bytes.NewBuffer(body))
+	req, _ := http.NewRequest("POST", "/message/" + id, bytes.NewBuffer(body))
 
-	//Assign HTTP Handler function to controller
 	handler := http.HandlerFunc(msgCtrl.UpdateMessage)
 
-	//Record HTTP Response (httptest)
 	response := httptest.NewRecorder()
 
-	//Dispatch the HTTP request
 	handler.ServeHTTP(response, req)
 
-	//Add Assertions on the HTTP Status code and the response
 	expected := http.StatusOK
 	status := response.Code
 
@@ -140,15 +122,13 @@ func TestController_UpdateMessage(t *testing.T) {
 		t.Errorf("Handler returned a wrong status code. Expected: %v Actual: %v", expected, status)
 	}
 
-	// Decode the HTTP response
-	var msg Message
+	var msg MessageResponse
 	json.NewDecoder(io.Reader(response.Body)).Decode(&msg)
 
-	// Assert HTTP response
 	g := NewGomegaWithT(t)
 
 	// Id should not be modified
-	g.Expect(msg.Id).Should(Equal(id1))
+	g.Expect(msg.Id).Should(Equal(id))
 
 	// Text must be equal to the body
 	g.Expect(msg.Text).Should(Equal(invalidInput))
@@ -156,26 +136,20 @@ func TestController_UpdateMessage(t *testing.T) {
 	// And it should be an invalid palindrome
 	g.Expect(msg.Palindrome).NotTo(BeTrue())
 
-	// Clean up collection
 	TearDown(&msg)
 }
 
 func TestController_UpdateMessage2(t *testing.T) {
-	//Create a new HTTP POST request
 	var body = []byte(`{"id": "` + id2 + `", "text": "` + invalidInput + `"}`)
 
 	req, _ := http.NewRequest("POST", "/message/", bytes.NewBuffer(body))
 
-	//Assign HTTP Handler function to controller
 	handler := http.HandlerFunc(msgCtrl.UpdateMessage)
 
-	//Record HTTP Response (httptest)
 	response := httptest.NewRecorder()
 
-	//Dispatch the HTTP request
 	handler.ServeHTTP(response, req)
 
-	//Add Assertions on the HTTP Status code and the response
 	expected := http.StatusBadRequest
 	status := response.Code
 
@@ -183,32 +157,24 @@ func TestController_UpdateMessage2(t *testing.T) {
 		t.Errorf("Handler returned a wrong status code. Expected: %v Actual: %v", expected, status)
 	}
 
-	// Decode the HTTP response
 	var err ServiceError
 	json.NewDecoder(io.Reader(response.Body)).Decode(&err)
 
-	// Assert HTTP response
 	g := NewGomegaWithT(t)
 	g.Expect(err.Error).Should(Equal("the id provided is invalid"))
 }
 
 func TestController_DeleteMessage(t *testing.T) {
-	// Provision the msg in the collection
-	Setup()
+	id := Setup()
 
-	//Create a new HTTP POST request
-	req, _ := http.NewRequest("DELETE", "/message/1", nil)
+	req, _ := http.NewRequest("DELETE", "/message/" + id, nil)
 
-	//Assign HTTP Handler function to controller
 	handler := http.HandlerFunc(msgCtrl.DeleteMessage)
 
-	//Record HTTP Response (httptest)
 	response := httptest.NewRecorder()
 
-	//Dispatch the HTTP request
 	handler.ServeHTTP(response, req)
 
-	//Add Assertions on the HTTP Status code and the response
 	expected := http.StatusNoContent
 	status := response.Code
 
@@ -218,19 +184,14 @@ func TestController_DeleteMessage(t *testing.T) {
 }
 
 func TestController_DeleteMessage2(t *testing.T) {
-	//Create a new HTTP POST request
 	req, _ := http.NewRequest("DELETE", "/message/11", nil)
 
-	//Assign HTTP Handler function to controller
 	handler := http.HandlerFunc(msgCtrl.DeleteMessage)
 
-	//Record HTTP Response (httptest)
 	response := httptest.NewRecorder()
 
-	//Dispatch the HTTP request
 	handler.ServeHTTP(response, req)
 
-	//Add Assertions on the HTTP Status code and the response
 	expected := http.StatusBadRequest
 	status := response.Code
 
@@ -238,33 +199,25 @@ func TestController_DeleteMessage2(t *testing.T) {
 		t.Errorf("Handler returned a wrong status code. Expected: %v Actual: %v", expected, status)
 	}
 
-	// Decode the HTTP response
 	var err ServiceError
 	json.NewDecoder(io.Reader(response.Body)).Decode(&err)
 
-	// Assert HTTP response
 	g := NewGomegaWithT(t)
 	g.Expect(err.Error).Should(Equal("a message does not exists for the given Id: 11"))
 }
 
 
 func TestController_GetAllMessages(t *testing.T) {
-	// Provision the msg in the collection
 	Setup()
 
-	//Create a new HTTP POST request
 	req, _ := http.NewRequest("GET", "/messages", nil)
 
-	//Assign HTTP Handler function to controller
 	handler := http.HandlerFunc(msgCtrl.GetAllMessages)
 
-	//Record HTTP Response (httptest)
 	response := httptest.NewRecorder()
 
-	//Dispatch the HTTP request
 	handler.ServeHTTP(response, req)
 
-	//Add Assertions on the HTTP Status code and the response
 	expected := http.StatusOK
 	status := response.Code
 
@@ -274,22 +227,16 @@ func TestController_GetAllMessages(t *testing.T) {
 }
 
 func TestController_GetMessageById(t *testing.T) {
-	// Provision the msg in the collection
 	Setup()
 
-	//Create a new HTTP POST request
 	req, _ := http.NewRequest("GET", "/message/11", nil)
 
-	//Assign HTTP Handler function to controller
 	handler := http.HandlerFunc(msgCtrl.GetMessageById)
 
-	//Record HTTP Response (httptest)
 	response := httptest.NewRecorder()
 
-	//Dispatch the HTTP request
 	handler.ServeHTTP(response, req)
 
-	//Add Assertions on the HTTP Status code and the response
 	expected := http.StatusBadRequest
 	status := response.Code
 
@@ -297,32 +244,24 @@ func TestController_GetMessageById(t *testing.T) {
 		t.Errorf("Handler returned a wrong status code. Expected: %v Actual: %v", expected, status)
 	}
 
-	// Decode the HTTP response
 	var err ServiceError
 	json.NewDecoder(io.Reader(response.Body)).Decode(&err)
 
-	// Assert HTTP response
 	g := NewGomegaWithT(t)
 	g.Expect(err.Error).Should(Equal("a message does not exists for the given Id: 11"))
 }
 
 func TestController_GetMessageById2(t *testing.T) {
-	// Provision the msg in the collection
-	Setup()
+	id := Setup()
 
-	//Create a new HTTP POST request
-	req, _ := http.NewRequest("GET", "/message/1", nil)
+	req, _ := http.NewRequest("GET", "/message/"+id, nil)
 
-	//Assign HTTP Handler function to controller
 	handler := http.HandlerFunc(msgCtrl.GetMessageById)
 
-	//Record HTTP Response (httptest)
 	response := httptest.NewRecorder()
 
-	//Dispatch the HTTP request
 	handler.ServeHTTP(response, req)
 
-	//Add Assertions on the HTTP Status code and the response
 	expected := http.StatusOK
 	status := response.Code
 
@@ -330,15 +269,13 @@ func TestController_GetMessageById2(t *testing.T) {
 		t.Errorf("Handler returned a wrong status code. Expected: %v Actual: %v", expected, status)
 	}
 
-	// Decode the HTTP response
-	var msg Message
+	var msg MessageResponse
 	json.NewDecoder(io.Reader(response.Body)).Decode(&msg)
 
-	// Assert HTTP response
 	g := NewGomegaWithT(t)
 
 	// Id should not be modified
-	g.Expect(msg.Id).Should(Equal(id1))
+	g.Expect(msg.Id).Should(Equal(id))
 
 	// Text must be equal to the body
 	g.Expect(msg.Text).Should(Equal(validInput1))
@@ -346,6 +283,5 @@ func TestController_GetMessageById2(t *testing.T) {
 	// And it should be an invalid palindrome
 	g.Expect(msg.Palindrome).To(BeTrue())
 
-	// Clean up collection
 	TearDown(&msg)
 }

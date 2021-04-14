@@ -5,15 +5,14 @@ import (
 	. "github.com/ash822/goweb/entity"
 	"github.com/ash822/goweb/repository"
 	"github.com/ash822/goweb/utils"
-	"github.com/google/uuid"
 )
 
 type MessageService interface {
-	Create(message *Message) (*Message, error)
-	Update(id string, message *Message) (*Message, error)
+	Create(message *MessageRequest) (*MessageResponse, error)
+	Update(id string, message *MessageRequest) (*MessageResponse, error)
 	Delete(id string) error
-	FindById(id string) (*Message, error)
-	FindAll() ([]Message, error)
+	FindById(id string) (*MessageResponse, error)
+	FindAll() ([]MessageResponse, error)
 }
 
 var repo repository.MessageRepository
@@ -25,28 +24,33 @@ func GetInstance(msgRepo repository.MessageRepository) MessageService {
 	return &svc{}
 }
 
-func (*svc) Create(msg *Message) (*Message, error) {
+func (*svc) Create(msg *MessageRequest) (*MessageResponse, error) {
 	if msg.Text == "" {
 		return nil, errors.New("the message text is invalid or not found")
 	}
 
-	msg.Id = uuid.New().String()
-	msg.Palindrome = msgutils.IsPalindrome(msg.Text)
-	return repo.Create(msg)
+	var msgRes MessageResponse
+
+	msgRes.Text = msg.Text
+	msgRes.Palindrome = msgutils.IsPalindrome(msg.Text)
+	return repo.Create(&msgRes)
 }
 
-func (*svc) Update(id string, newMsg *Message) (*Message, error) {
+func (*svc) Update(id string, msg *MessageRequest) (*MessageResponse, error) {
 	if id == "" {
 		return nil, errors.New("the id provided is invalid")
 	}
 
-	if newMsg.Text == "" {
+	if msg.Text == "" {
 		return nil, errors.New("the message text is invalid or not found")
 	}
 
+	var newMsg MessageResponse
+
 	newMsg.Id = id
+	newMsg.Text = msg.Text
 	newMsg.Palindrome = msgutils.IsPalindrome(newMsg.Text)
-	return repo.Update(newMsg)
+	return repo.Update(&newMsg)
 }
 
 func (*svc) Delete(id string) error {
@@ -57,7 +61,7 @@ func (*svc) Delete(id string) error {
 	return repo.Delete(id)
 }
 
-func (*svc) FindById(id string) (*Message, error) {
+func (*svc) FindById(id string) (*MessageResponse, error) {
 	if id == "" {
 		return nil, errors.New("the id provided is invalid")
 	}
@@ -65,6 +69,6 @@ func (*svc) FindById(id string) (*Message, error) {
 	return repo.FindById(id)
 }
 
-func (*svc) FindAll() ([]Message, error) {
+func (*svc) FindAll() ([]MessageResponse, error) {
 	return repo.FindAll()
 }
