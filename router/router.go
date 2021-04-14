@@ -39,7 +39,7 @@ func (*httpRouter) CreateServer(port string) {
 
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{"GET", "POST", "DELETE", "OPTION"},
+		AllowedMethods: []string{"GET", "POST", "DELETE", "OPTIONS"},
 	})
 
 	handler := c.Handler(muxRouter)

@@ -2,7 +2,7 @@ basePath: /
 consumes:
 - application/json
 definitions:
-  Message:
+  MessageResponse:
     properties:
       id:
         type: string
@@ -83,8 +83,6 @@ paths:
           $ref: '#/responses/MessageResponse'
         "400":
           $ref: '#/responses/ErrorResponse'
-        "404":
-          $ref: '#/responses/ErrorResponse'
       tags:
       - message
     post:
@@ -134,12 +132,12 @@ responses:
   MessageResponse:
     description: ""
     schema:
-      $ref: '#/definitions/Message'
+      $ref: '#/definitions/MessageResponse'
   MessagesResponse:
     description: ""
     schema:
       items:
-        $ref: '#/definitions/Message'
+        $ref: '#/definitions/MessageResponse'
       type: array
 schemes:
 - http
