@@ -75,7 +75,11 @@ For more information on API documentation refer the [API documentation](#api-doc
 
 #### Assumption
 
-The palindrome check is case-insensitive. Both `Kayak` and `kaYAK` will be a valid palindrome.
+1. The palindrome check is case-insensitive. Both `Kayak` and `kaYAK` will be a valid palindrome.
+2. There is no middleware is implemented for handling security, so the endpoints can be reached without any authentication.
+3. The message resources are stored in-memory in a map data structure, there is no persistence connection to store the data. Hence, if the service is restarted, all the data gets lost.
+4. To simplify the development, the get all messages endpoint `/messages` does not support filter, sorting and pagination.
+5. The deployment has been configured to push the docker images to my personal docker hub account. However, I made the repository public and anyone can pull images from the repository if they have a valid docker hub account.
 
 ### Architecture
 
@@ -95,7 +99,7 @@ The REST endpoints are tested using `net/http/httptest` package.
 
 To execute the tests, run `make test` command.
 
-#### API documentation
+### API documentation
 
 To generate the swagger file and to serve the swagger client, run `make swagger-run` command. 
 
