@@ -5,6 +5,7 @@ package docs
 // responses:
 //   200: MessageResponse
 //	 400: ErrorResponse
+//	 401: ErrorResponse
 
 // swagger:parameters updateEndpoint
 type MessageUpdateParamsWrapper struct {

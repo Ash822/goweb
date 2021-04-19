@@ -1,6 +1,7 @@
 package router
 
 import (
+	. "github.com/ash822/goweb/middleware"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 	"log"
@@ -44,5 +45,5 @@ func (*httpRouter) CreateServer(port string) {
 
 	handler := c.Handler(muxRouter)
 
-	http.ListenAndServe(":"+port, handler)
+	http.ListenAndServe(":"+port, AuthHandler(handler))
 }

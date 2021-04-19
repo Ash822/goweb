@@ -5,6 +5,7 @@ package docs
 // responses:
 //   204: EmptyResponse
 //   400: ErrorResponse
+//	 401: ErrorResponse
 
 // swagger:response EmptyResponse
 type EmptyResponse struct {

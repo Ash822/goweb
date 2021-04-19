@@ -50,6 +50,8 @@ paths:
           $ref: '#/responses/MessageResponse'
         "400":
           $ref: '#/responses/ErrorResponse'
+        "401":
+          $ref: '#/responses/ErrorResponse'
       tags:
       - message
   /message/{id}:
@@ -67,6 +69,8 @@ paths:
           $ref: '#/responses/EmptyResponse'
         "400":
           $ref: '#/responses/ErrorResponse'
+        "401":
+          $ref: '#/responses/ErrorResponse'
       tags:
       - message
     get:
@@ -82,6 +86,8 @@ paths:
         "200":
           $ref: '#/responses/MessageResponse'
         "400":
+          $ref: '#/responses/ErrorResponse'
+        "401":
           $ref: '#/responses/ErrorResponse'
       tags:
       - message
@@ -111,6 +117,8 @@ paths:
           $ref: '#/responses/MessageResponse'
         "400":
           $ref: '#/responses/ErrorResponse'
+        "401":
+          $ref: '#/responses/ErrorResponse'
       tags:
       - message
   /messages:
@@ -120,6 +128,8 @@ paths:
       responses:
         "200":
           $ref: '#/responses/MessagesResponse'
+        "401":
+          $ref: '#/responses/ErrorResponse'
 produces:
 - application/json
 responses:
@@ -141,4 +151,11 @@ responses:
       type: array
 schemes:
 - http
+security:
+- api_key: []
+securityDefinitions:
+  api_key:
+    in: header
+    name: X-API-Key
+    type: apiKey
 swagger: "2.0"
