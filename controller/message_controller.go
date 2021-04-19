@@ -26,8 +26,6 @@ func GetInstance(msgSvc service.MessageService) MessageController {
 }
 
 func (*controller) GetMessageById(resw http.ResponseWriter, req *http.Request) {
-	resw.Header().Set("Content-type", "application/json")
-
 	id := strings.TrimPrefix(req.URL.Path, "/message/")
 
 	msg, err := svc.FindById(id)
@@ -43,8 +41,6 @@ func (*controller) GetMessageById(resw http.ResponseWriter, req *http.Request) {
 }
 
 func (*controller) GetAllMessages(resw http.ResponseWriter, _ *http.Request) {
-	resw.Header().Set("Content-type", "application/json")
-
 	msgs, err := svc.FindAll()
 
 	if err != nil {
@@ -57,8 +53,6 @@ func (*controller) GetAllMessages(resw http.ResponseWriter, _ *http.Request) {
 }
 
 func (*controller) CreateMessage(resw http.ResponseWriter, req *http.Request) {
-	resw.Header().Set("Content-type", "application/json")
-
 	var msgReq MessageRequest
 	var err error
 
@@ -77,8 +71,6 @@ func (*controller) CreateMessage(resw http.ResponseWriter, req *http.Request) {
 }
 
 func (*controller) UpdateMessage(resw http.ResponseWriter, req *http.Request) {
-	resw.Header().Set("Content-type", "application/json")
-
 	var msgReq MessageRequest
 
 	id := strings.TrimPrefix(req.URL.Path, "/message/")
@@ -98,8 +90,6 @@ func (*controller) UpdateMessage(resw http.ResponseWriter, req *http.Request) {
 }
 
 func (*controller) DeleteMessage(resw http.ResponseWriter, req *http.Request) {
-	resw.Header().Set("Content-type", "application/json")
-
 	id := strings.TrimPrefix(req.URL.Path, "/message/")
 
 	err := svc.Delete(id)

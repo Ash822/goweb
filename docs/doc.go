@@ -13,5 +13,14 @@
 //     Produces:
 //     - application/json
 //
+//     Security:
+//     - api_key:
+//
+//     SecurityDefinitions:
+//     api_key:
+//          type: apiKey
+//          name: X-API-Key
+//          in: header
+//
 // swagger:meta
 package docs

@@ -7,6 +7,7 @@ import . "github.com/ash822/goweb/entity"
 // responses:
 //   201: MessageResponse
 //	 400: ErrorResponse
+//	 401: ErrorResponse
 
 // swagger:response MessageResponse
 type MessageResponseWrapper struct {
